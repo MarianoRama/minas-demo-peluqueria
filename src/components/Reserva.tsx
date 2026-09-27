@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { EQUIPO, NEGOCIO, SERVICIOS, type Servicio } from '../data'
+import { CATEGORIAS, EQUIPO, NEGOCIO, SERVICIOS, type Servicio } from '../data'
 import {
   dateKey,
   estaCerrado,
@@ -32,6 +32,7 @@ type Props = {
 
 export function Reserva({ onReservaConfirmada }: Props) {
   const [paso, setPaso] = useState(0)
+  const [categoriaActiva, setCategoriaActiva] = useState<string>(CATEGORIAS[0])
   const [servicioId, setServicioId] = useState<string | null>(null)
   const [profesionalId, setProfesionalId] = useState<string | 'cualquiera' | null>(null)
   const [fecha, setFecha] = useState<Date | null>(null)
@@ -103,6 +104,7 @@ export function Reserva({ onReservaConfirmada }: Props) {
 
   function reiniciar() {
     setPaso(0)
+    setCategoriaActiva(CATEGORIAS[0])
     setServicioId(null)
     setProfesionalId(null)
     setFecha(null)
@@ -197,22 +199,40 @@ export function Reserva({ onReservaConfirmada }: Props) {
             <h3 className="font-display text-2xl font-semibold text-ink">
               ¿Qué servicio querés reservar?
             </h3>
-            <ul className="mt-6 space-y-2">
-              {SERVICIOS.map((s) => (
+
+            <div className="mt-5 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+              {CATEGORIAS.map((categoria) => (
+                <button
+                  key={categoria}
+                  type="button"
+                  onClick={() => setCategoriaActiva(categoria)}
+                  className={`shrink-0 whitespace-nowrap border px-4 py-2 text-sm font-medium transition-colors ${
+                    categoriaActiva === categoria
+                      ? 'border-wine bg-wine text-cream'
+                      : 'border-ink/20 text-ink/70 hover:border-ink'
+                  }`}
+                >
+                  {categoria}
+                </button>
+              ))}
+            </div>
+
+            <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {SERVICIOS.filter((s) => s.categoria === categoriaActiva).map((s) => (
                 <li key={s.id}>
                   <button
                     type="button"
                     onClick={() => elegirServicio(s)}
-                    className="tarjeta-viva flex w-full min-h-[44px] items-center justify-between gap-3 border border-ink/15 px-4 py-3 text-left hover:border-wine hover:bg-wine/5"
+                    className="tarjeta-viva flex h-full w-full min-h-[44px] flex-col items-start gap-1 border border-ink/15 px-4 py-3 text-left hover:border-wine hover:bg-wine/5"
                   >
-                    <span>
-                      <span className="block font-medium text-ink">{s.nombre}</span>
-                      <span className="mt-0.5 flex items-center gap-1 text-xs text-ink/50">
-                        <IconReloj className="h-3.5 w-3.5" /> {s.duracionMin} min · {s.categoria}
+                    <span className="flex w-full items-baseline justify-between gap-2">
+                      <span className="font-medium text-ink">{s.nombre}</span>
+                      <span className="font-display text-lg font-semibold whitespace-nowrap text-wine">
+                        {formatearPrecio(s.precio)}
                       </span>
                     </span>
-                    <span className="font-display text-lg font-semibold whitespace-nowrap text-wine">
-                      {formatearPrecio(s.precio)}
+                    <span className="flex items-center gap-1 text-xs text-ink/50">
+                      <IconReloj className="h-3.5 w-3.5" /> {s.duracionMin} min
                     </span>
                   </button>
                 </li>

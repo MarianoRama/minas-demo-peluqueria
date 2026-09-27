@@ -16,6 +16,9 @@ export const NEGOCIO = {
   whatsapp: '59899000000',
   email: 'hola@tijerayatinta.demo',
   mapsQuery: 'Minas,+Lavalleja,+Uruguay',
+  // Foto real del salón para el hero (opcional). Si se completa con una
+  // URL o ruta de imagen, reemplaza a la ilustración editorial del hero.
+  heroFoto: undefined as string | undefined,
 }
 
 export type Servicio = {

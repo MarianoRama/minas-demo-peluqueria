@@ -1,5 +1,5 @@
 import { NEGOCIO } from '../data'
-import { IconGota, IconPeine, IconPerfil, IconTijera } from './icons'
+import { IconRetratoEditorial } from './icons'
 
 const CIFRAS = [
   { numero: '17', detalle: 'años en el centro de Minas' },
@@ -55,33 +55,27 @@ export function Hero() {
           </dl>
         </div>
 
-        <div className="relative min-h-[22rem] overflow-hidden bg-ink px-8 py-14 sm:min-h-[28rem] md:col-span-5 md:min-h-full">
-          <span
-            aria-hidden="true"
-            className="absolute -top-10 -right-10 font-display text-[9rem] leading-none text-cream/10 select-none"
-          >
-            &amp;
-          </span>
-
-          <div className="relative flex h-full flex-col items-center justify-center gap-8">
-            <IconPerfil className="h-36 w-36 text-cream sm:h-44 sm:w-44" aria-hidden="true" />
-
-            <div className="grid w-full max-w-[16rem] grid-cols-2 gap-4">
-              <div className="flex flex-col items-center gap-2 border border-cream/20 py-5">
-                <IconTijera className="h-8 w-8 text-wine-light" aria-hidden="true" />
-                <span className="text-[11px] tracking-wide text-cream/60 uppercase">Corte</span>
-              </div>
-              <div className="flex flex-col items-center gap-2 border border-cream/20 py-5">
-                <IconGota className="h-8 w-8 text-wine-light" aria-hidden="true" />
-                <span className="text-[11px] tracking-wide text-cream/60 uppercase">Color</span>
-              </div>
-            </div>
-
-            <p className="flex items-center gap-2 font-display text-lg text-cream/85">
-              <IconPeine className="h-5 w-5 text-cream/50" aria-hidden="true" />
-              Desde 2009, estilo con oficio
-            </p>
+        <div className="relative flex min-h-[26rem] flex-col overflow-hidden bg-ink px-6 py-8 sm:min-h-[32rem] sm:px-9 sm:py-10 md:col-span-5 md:min-h-full">
+          <div className="flex items-baseline justify-between border-b border-cream/15 pb-4 text-[11px] font-semibold tracking-[0.22em] text-cream/55 uppercase">
+            <span>Nº 17</span>
+            <span>Otoño en Minas</span>
           </div>
+
+          <div className="relative flex flex-1 items-center justify-center py-6">
+            {NEGOCIO.heroFoto ? (
+              <img
+                src={NEGOCIO.heroFoto}
+                alt={`Interior de ${NEGOCIO.nombre}`}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <IconRetratoEditorial className="h-full max-h-80 w-auto" aria-hidden="true" />
+            )}
+          </div>
+
+          <p className="border-t border-cream/15 pt-4 text-center font-display text-lg text-cream/85 italic">
+            "Estilo con oficio, desde 2009"
+          </p>
         </div>
       </div>
     </section>

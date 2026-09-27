@@ -35,12 +35,12 @@ export function Servicios() {
           </p>
         </div>
 
-        <div className="mt-14 space-y-14">
+        <div className="mt-14 md:columns-2 md:gap-x-14">
           {CATEGORIAS.map((categoria) => {
             const items = SERVICIOS.filter((s) => s.categoria === categoria)
             const Icono = ICONO_CATEGORIA[categoria]
             return (
-              <div key={categoria} data-reveal>
+              <div key={categoria} data-reveal className="mb-14 break-inside-avoid">
                 <div className="flex items-center gap-3 border-b border-ink/20 pb-3">
                   <Icono className="h-6 w-6 shrink-0 text-wine" aria-hidden="true" />
                   <h3 className="font-display text-2xl font-semibold text-ink">{categoria}</h3>

@@ -122,6 +122,108 @@ export function IconFlecha(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+/**
+ * Ilustración editorial para el hero: retrato de perfil trazado en líneas
+ * gruesas + un plano de color a sangre, al estilo de una tapa de revista.
+ * Usa variables CSS de tema en vez de currentColor para mantener sus
+ * propios colores sin importar dónde se use.
+ */
+const BULBOS_ESPEJO = [
+  [158, 90], [146.9, 124.1], [117.9, 145.2], [82.1, 145.2], [53.1, 124.1],
+  [42, 90], [53.1, 55.9], [82.1, 34.8], [117.9, 34.8], [146.9, 55.9],
+] as const
+
+export function IconRetratoEditorial(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 220 280" fill="none" {...props}>
+      {/* plano de color a sangre, tras el espejo */}
+      <rect x="140" y="0" width="80" height="280" fill="var(--color-wine-light)" />
+
+      {/* espejo de camarín, con lamparitas alrededor */}
+      <circle cx="100" cy="90" r="58" stroke="var(--color-cream)" strokeWidth="4" />
+      {BULBOS_ESPEJO.map(([cx, cy]) => (
+        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="4" fill="var(--color-cream)" />
+      ))}
+
+      {/* silla de barbero */}
+      <rect x="85" y="148" width="30" height="22" rx="7" stroke="var(--color-cream)" strokeWidth="3.5" />
+      <rect x="58" y="163" width="84" height="58" rx="12" stroke="var(--color-cream)" strokeWidth="3.5" />
+      <rect x="44" y="208" width="14" height="34" rx="5" stroke="var(--color-cream)" strokeWidth="3.5" />
+      <rect x="142" y="208" width="14" height="34" rx="5" stroke="var(--color-cream)" strokeWidth="3.5" />
+      <rect x="53" y="216" width="94" height="18" rx="5" stroke="var(--color-cream)" strokeWidth="3.5" />
+      <rect x="92" y="233" width="16" height="26" fill="var(--color-cream)" />
+      <ellipse cx="100" cy="264" rx="36" ry="9" stroke="var(--color-cream)" strokeWidth="3.5" />
+    </svg>
+  )
+}
+
+/**
+ * Bustos de línea para el equipo, cuatro peinados distintos a modo de
+ * ilustración (no fotos). Comparten hombros/cuello/cabeza y varían el
+ * cabello.
+ */
+function BustoBase({ children, ...props }: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth={1.7} {...props}>
+      <circle cx="32" cy="24" r="12" />
+      <path d="M12 62c0-14.4 9-24.8 20-24.8s20 10.4 20 24.8" strokeLinecap="round" />
+      {children}
+    </svg>
+  )
+}
+
+export function IconBustoCorto(props: SVGProps<SVGSVGElement>) {
+  return (
+    <BustoBase {...props}>
+      <path d="M19 20a13.2 13.2 0 0 1 26 0" />
+      <path d="M19 20v6M45 20v6" strokeLinecap="round" />
+    </BustoBase>
+  )
+}
+
+export function IconBustoOndulado(props: SVGProps<SVGSVGElement>) {
+  return (
+    <BustoBase {...props}>
+      <path d="M20 18c-6 5-7 15-3 25" strokeLinecap="round" />
+      <path d="M44 18c6 5 7 15 3 25" strokeLinecap="round" />
+    </BustoBase>
+  )
+}
+
+export function IconBustoRizado(props: SVGProps<SVGSVGElement>) {
+  return (
+    <BustoBase {...props}>
+      <circle cx="22" cy="14" r="2.6" />
+      <circle cx="28" cy="10.5" r="3" />
+      <circle cx="35" cy="11" r="3" />
+      <circle cx="41" cy="15" r="2.6" />
+      <circle cx="17" cy="19" r="2.4" />
+      <circle cx="46" cy="19" r="2.4" />
+    </BustoBase>
+  )
+}
+
+export function IconBustoLargo(props: SVGProps<SVGSVGElement>) {
+  return (
+    <BustoBase {...props}>
+      <path d="M19 17c-8 10-10 28-6 42" strokeLinecap="round" />
+      <path d="M45 17c8 10 10 28 6 42" strokeLinecap="round" />
+    </BustoBase>
+  )
+}
+
+export function IconFirma(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 84 16" fill="none" stroke="currentColor" strokeWidth={1.4} {...props}>
+      <path
+        d="M2 9c5-8 10 8 15 0s10-8 15 0 10 8 15 0 10-8 15 0"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 export function IconMenu(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} {...props}>
