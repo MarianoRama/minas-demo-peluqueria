@@ -1,28 +1,141 @@
 @import "tailwindcss";
+@import "@fontsource-variable/fraunces";
+@import "@fontsource/work-sans/400.css";
+@import "@fontsource/work-sans/500.css";
+@import "@fontsource/work-sans/600.css";
 
 @theme {
-  --font-display: "Playfair Display", ui-serif, Georgia, serif;
-  --font-sans: "Poppins", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-sans: "Work Sans", system-ui, "Segoe UI", Roboto, sans-serif;
 
-  --color-rosewood: #b76e79;
-  --color-blush-50: #fdf4f3;
-  --color-blush-100: #fbe7e6;
-  --color-blush-200: #f6d3d0;
-  --color-gold: #c9a15a;
-  --color-gold-light: #e8d5ab;
-  --color-charcoal: #2f2a2c;
-}
+  /* crema / hueso */
+  --color-cream: #f5efe2;
+  --color-cream-dim: #ece2cd;
+  --color-paper: #fbf8f1;
 
-html {
-  scroll-behavior: smooth;
+  /* bordó profundo — color de carácter */
+  --color-wine: #6a1626;
+  --color-wine-light: #8c2436;
+  --color-wine-dark: #4a0f1c;
+
+  /* negro tinta */
+  --color-ink: #1c1611;
+  --color-ink-soft: #33291f;
 }
 
 body {
   font-family: var(--font-sans);
-  color: var(--color-charcoal);
-  background-color: var(--color-blush-50);
+  color: var(--color-ink);
+  background-color: var(--color-cream);
 }
 
 .font-display {
   font-family: var(--font-display);
+  font-variation-settings: 'opsz' 40;
+}
+
+/* textura sutil de papel */
+.textura-papel {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(28, 22, 17, 0.05) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+.linea-punteada {
+  border-bottom: 1px dashed rgba(28, 22, 17, 0.28);
+}
+
+/* aparición al hacer scroll */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+[data-reveal][data-revealed='true'] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* tarjetas / bloques con hover vivo */
+.tarjeta-viva {
+  transition: transform 300ms ease-out, box-shadow 300ms ease-out, border-color 300ms ease-out;
+}
+
+@media (hover: hover) {
+  .tarjeta-viva:hover {
+    transform: translateY(-4px) scale(1.015);
+    box-shadow: 0 18px 34px -18px rgba(28, 22, 17, 0.35);
+  }
+
+  .tarjeta-viva:hover .tarjeta-viva-icono {
+    transform: scale(1.08);
+  }
+
+  .enlace-flecha:hover .enlace-flecha-icono {
+    transform: translateX(4px);
+  }
+}
+
+.tarjeta-viva-icono,
+.enlace-flecha-icono {
+  transition: transform 250ms ease-out;
+}
+
+/* cinta de logos en movimiento */
+.cinta-logos {
+  --duracion-cinta: 32s;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+.cinta-logos-pista {
+  animation: desplazar-cinta var(--duracion-cinta) linear infinite;
+}
+
+.cinta-logos:hover .cinta-logos-pista {
+  animation-play-state: paused;
+}
+
+@keyframes desplazar-cinta {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cinta-logos-pista {
+    animation: none;
+  }
 }
