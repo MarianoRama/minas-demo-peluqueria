@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import Booking from './components/Booking'
+import Products from './components/Products'
 
 /**
  * Tijera & Tinta — DEMO de portafolio
@@ -14,7 +16,7 @@ import { useState } from 'react'
  */
 
 const configuredWhatsAppNumber = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '') ?? ''
-const WHATSAPP_NUMBER = /^598\d{8}$/.test(configuredWhatsAppNumber)
+const WHATSAPP_NUMBER = /^598\d{8}$/.test(configuredWhatsAppNumber) && configuredWhatsAppNumber !== '59899000000'
   ? configuredWhatsAppNumber
   : ''
 const WHATSAPP_MESSAGE_TEXT =
@@ -27,6 +29,8 @@ const WHATSAPP_URL = WHATSAPP_NUMBER
 const NAV_LINKS = [
   { href: '#inicio', label: 'Inicio' },
   { href: '#servicios', label: 'Servicios' },
+  { href: '#reservar', label: 'Reservar' },
+  { href: '#productos', label: 'Productos' },
   { href: '#contacto', label: 'Contacto' },
 ]
 
@@ -173,7 +177,7 @@ function Hero() {
   )
 }
 
-function Servicios() {
+function Servicios({ onChooseService }: { onChooseService: (service: string) => void }) {
   return (
     <section id="servicios" className="px-6 py-24">
       <div className="mx-auto max-w-6xl">
@@ -203,12 +207,11 @@ function Servicios() {
                 {servicio.items.map((item) => (
                   <li
                     key={item.nombre}
-                    className="flex items-center justify-between border-b border-dashed border-charcoal/10 pb-2 text-sm"
+                    className="flex items-center justify-between gap-3 border-b border-dashed border-charcoal/10 pb-2 text-sm"
                   >
-                    <span className="text-charcoal/80">{item.nombre}</span>
-                    <span className="font-semibold text-gold">
-                      {item.precio}
-                    </span>
+                    <span className="min-w-0 text-charcoal/80">{item.nombre}</span>
+                    <span className="shrink-0 font-semibold text-gold">{item.precio}</span>
+                    <button type="button" onClick={() => { onChooseService(item.nombre); document.getElementById('reservar')?.scrollIntoView({ behavior: 'smooth' }) }} className="shrink-0 rounded-full border border-rosewood/30 px-3 py-1.5 text-xs font-semibold text-rosewood hover:bg-rosewood hover:text-white">Elegir</button>
                   </li>
                 ))}
               </ul>
@@ -364,12 +367,16 @@ function Footer() {
 }
 
 function App() {
+  const [requestedService, setRequestedService] = useState<string | undefined>()
+
   return (
     <div className="min-h-screen bg-blush-50">
       <Header />
       <main>
         <Hero />
-        <Servicios />
+        <Servicios onChooseService={setRequestedService} />
+        <Booking initialService={requestedService} />
+        <Products />
         <HorariosYUbicacion />
         <ContactoCTA />
       </main>

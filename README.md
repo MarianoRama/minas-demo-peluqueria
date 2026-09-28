@@ -1,15 +1,14 @@
 # Tijera & Tinta — demo de portafolio
 
-Landing page para "Tijera & Tinta", un salón **ficticio** creado como pieza de
-portafolio para mostrarle a dueños de
-peluquerías y barberías de Minas, Uruguay, el tipo de sitio que un
-freelancer puede desarrollarles.
+Landing page para "Tijera & Tinta", un salón **ficticio** en Minas, Uruguay.
+Incluye una solicitud de turno editable y un catálogo de productos con una
+consulta preparada.
 
 **Este no es un negocio real.** El nombre, los servicios, los precios, los
 horarios y la ubicación son ilustrativos. WhatsApp queda desactivado hasta
-configurar el número real del negocio en `VITE_WHATSAPP_NUMBER` (formato
-internacional, solo dígitos: `598` seguido de ocho dígitos). Sin el número, la
-página permite preparar el mensaje para copiar.
+configurar el número real del negocio en `VITE_WHATSAPP_NUMBER`. El formulario
+no consulta disponibilidad ni confirma turnos; sin un número configurado,
+permite revisar y copiar el mensaje.
 
 La foto de portada es ilustrativa y no representa al salón: [Benyamin
 Bohlouli, Unsplash](https://unsplash.com/photos/a-salon-with-a-mirror-chairs-and-lights-SmDZa6NlwMg).
@@ -26,10 +25,15 @@ Bohlouli, Unsplash](https://unsplash.com/photos/a-salon-with-a-mirror-chairs-and
 - Hero con imagen ilustrativa y enlace de contacto
 - Servicios con tarjetas y precios de ejemplo (corte, color, tratamientos,
   barbería, manicura)
-- Consulta por WhatsApp cuando se configura un contacto real
+- Solicitud de turno con servicio, preferencia de profesional, fecha, hora y
+  datos de contacto
+- Catálogo de productos de ejemplo, filtros, selección y cesta de consulta
 - Horarios y ubicación con mapa de Google Maps embebido (búsqueda genérica
   "Minas, Uruguay")
 - Footer con los límites claros de los datos ilustrativos
+
+Ver [ARCHITECTURE.md](ARCHITECTURE.md) para la integración mínima necesaria
+para recibir solicitudes, manejar disponibilidad y vender productos.
 
 ## Cómo correrlo
 
