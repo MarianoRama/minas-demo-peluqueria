@@ -1,27 +1,32 @@
+import { useState } from 'react'
+
 /**
- * Estilo Minas — DEMO de portafolio
+ * Tijera & Tinta — DEMO de portafolio
  * -----------------------------------
  * Este sitio es un proyecto de EJEMPLO creado para mostrar a dueños de
  * peluquerías/barberías de Minas, Uruguay, el tipo de landing page que un
  * freelancer puede desarrollar para su negocio.
  *
- * "Estilo Minas" NO es un negocio real. El nombre, los servicios, los
- * precios, el número de WhatsApp, las redes sociales y las imágenes de la
- * galería son todos datos ficticios / ilustrativos, usados únicamente con
+ * "Tijera & Tinta" NO es un negocio real. El nombre, los servicios, los
+ * precios, los datos de contacto, los horarios, la ubicación y la foto son
+ * ilustrativos, usados únicamente con
  * fines de demostración.
  */
 
-const WHATSAPP_NUMBER_DISPLAY = '+598 99 000 000'
-const WHATSAPP_NUMBER_LINK = '59899000000' // número de EJEMPLO, no es real
-const WHATSAPP_MESSAGE = encodeURIComponent(
-  'Hola! Quiero reservar un turno en Estilo Minas (demo).',
-)
-const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER_LINK}?text=${WHATSAPP_MESSAGE}`
+const configuredWhatsAppNumber = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '') ?? ''
+const WHATSAPP_NUMBER = /^598\d{8}$/.test(configuredWhatsAppNumber)
+  ? configuredWhatsAppNumber
+  : ''
+const WHATSAPP_MESSAGE_TEXT =
+  'Hola, quisiera consultar por los servicios y coordinar un turno en Tijera & Tinta (demo).'
+const WHATSAPP_MESSAGE = encodeURIComponent(WHATSAPP_MESSAGE_TEXT)
+const WHATSAPP_URL = WHATSAPP_NUMBER
+  ? `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`
+  : null
 
 const NAV_LINKS = [
   { href: '#inicio', label: 'Inicio' },
   { href: '#servicios', label: 'Servicios' },
-  { href: '#galeria', label: 'Galería' },
   { href: '#contacto', label: 'Contacto' },
 ]
 
@@ -73,28 +78,19 @@ const SERVICIOS: Servicio[] = [
   },
 ]
 
-const GALERIA_IDS = [101, 102, 103, 104, 105, 106, 107, 108]
-
-const REDES = [
-  { nombre: 'Instagram', icono: '📷' },
-  { nombre: 'Facebook', icono: '📘' },
-  { nombre: 'TikTok', icono: '🎵' },
-  { nombre: 'WhatsApp', icono: '💬' },
-]
-
 function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-rosewood/10 bg-blush-50/90 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="#inicio" className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-rosewood to-gold text-sm font-semibold text-white">
-            EM
+    <header className="sticky top-0 z-50 border-b border-rosewood/10 bg-blush-50/95 backdrop-blur-sm">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+        <a href="#inicio" className="flex min-w-0 items-center gap-2" aria-label="Tijera y Tinta, ir al inicio">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-rosewood text-sm font-semibold text-white">
+            T&amp;T
           </span>
           <span className="font-display text-xl font-semibold tracking-wide text-charcoal">
-            Estilo Minas
+            Tijera &amp; Tinta
           </span>
         </a>
-        <nav className="hidden gap-8 text-sm font-medium text-charcoal/80 md:flex">
+        <nav aria-label="Navegación principal" className="hidden gap-6 text-sm font-medium text-charcoal/80 md:flex">
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
@@ -106,14 +102,21 @@ function Header() {
           ))}
         </nav>
         <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden rounded-full bg-rosewood px-5 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-105 hover:bg-rosewood/90 md:inline-block"
+          href={WHATSAPP_URL ?? '#contacto'}
+          target={WHATSAPP_URL ? '_blank' : undefined}
+          rel={WHATSAPP_URL ? 'noopener noreferrer' : undefined}
+          className="shrink-0 rounded-full bg-rosewood px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-rosewood/90 sm:px-5 sm:text-sm"
         >
-          Reservá tu turno
+          {WHATSAPP_URL ? 'Consultá por WhatsApp' : 'Ver contacto'}
         </a>
       </div>
+      <nav aria-label="Navegación móvil" className="flex justify-center gap-5 overflow-x-auto border-t border-rosewood/10 px-4 py-2 text-xs font-medium text-charcoal/80 md:hidden">
+        {NAV_LINKS.map((link) => (
+          <a key={link.href} href={link.href} className="shrink-0 py-1 transition-colors hover:text-rosewood">
+            {link.label}
+          </a>
+        ))}
+      </nav>
     </header>
   )
 }
@@ -122,47 +125,28 @@ function Hero() {
   return (
     <section
       id="inicio"
-      className="relative overflow-hidden bg-gradient-to-br from-blush-100 via-blush-50 to-gold-light/40 px-6 pt-16 pb-24"
+      className="bg-blush-50 px-6 py-16 sm:py-20"
     >
-      {/* patrón decorativo */}
-      <div className="pointer-events-none absolute inset-0 opacity-40">
-        <svg
-          className="absolute -top-10 -right-10 h-72 w-72 text-rosewood/20"
-          viewBox="0 0 200 200"
-          fill="none"
-        >
-          <circle cx="100" cy="100" r="100" fill="currentColor" />
-        </svg>
-        <svg
-          className="absolute -bottom-16 -left-16 h-80 w-80 text-gold/20"
-          viewBox="0 0 200 200"
-          fill="none"
-        >
-          <circle cx="100" cy="100" r="100" fill="currentColor" />
-        </svg>
-      </div>
-
-      <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-12 md:flex-row">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-10 md:flex-row">
         <div className="flex-1 text-center md:text-left">
           <span className="inline-block rounded-full bg-white/70 px-4 py-1 text-xs font-semibold tracking-wide text-rosewood uppercase shadow-sm">
             Peluquería &amp; estética en Minas, Uruguay
           </span>
           <h1 className="mt-6 font-display text-4xl leading-tight font-bold text-charcoal md:text-6xl">
-            Realzá tu estilo en{' '}
-            <span className="text-rosewood">Estilo Minas</span>
+            Corte, color y cuidado personal
           </h1>
           <p className="mt-6 text-lg text-charcoal/70">
-            Cortes, color, tratamientos y barbería con una atención cálida y
-            personalizada. Pedí tu hora en segundos por WhatsApp.
+            Cortes, color, tratamientos y barbería en un mismo espacio. Escribinos
+            para consultar por un servicio y coordinar tu hora.
           </p>
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row md:justify-start">
             <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-rosewood px-8 py-3 text-base font-semibold text-white shadow-lg shadow-rosewood/30 transition-transform hover:scale-105 hover:bg-rosewood/90"
+              href={WHATSAPP_URL ?? '#contacto'}
+              target={WHATSAPP_URL ? '_blank' : undefined}
+              rel={WHATSAPP_URL ? 'noopener noreferrer' : undefined}
+              className="inline-flex items-center gap-2 rounded-full bg-rosewood px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-rosewood/90"
             >
-              Reservá tu turno
+              {WHATSAPP_URL ? 'Consultá por WhatsApp' : 'Ver contacto'}
             </a>
             <a
               href="#servicios"
@@ -173,30 +157,17 @@ function Hero() {
           </div>
         </div>
 
-        <div className="flex-1">
-          <div className="relative mx-auto aspect-square w-full max-w-sm">
-            <div className="absolute inset-0 rotate-3 rounded-[2.5rem] bg-gradient-to-br from-rosewood to-gold shadow-2xl" />
-            <div className="absolute inset-0 flex -rotate-3 items-center justify-center rounded-[2.5rem] bg-white/60 backdrop-blur-sm">
-              <svg
-                viewBox="0 0 120 120"
-                className="h-40 w-40 text-rosewood"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-              >
-                <path
-                  d="M60 20c-8 10-22 12-22 28 0 12 10 20 10 32 0 6-4 10-4 10"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M60 20c8 10 22 12 22 28 0 12-10 20-10 32 0 6 4 10 4 10"
-                  strokeLinecap="round"
-                />
-                <circle cx="60" cy="20" r="6" fill="currentColor" />
-              </svg>
-            </div>
-          </div>
-        </div>
+        <figure className="w-full max-w-xl flex-1">
+          <img
+            src={`${import.meta.env.BASE_URL}salon-interior.jpg`}
+            alt="Interior de una peluquería, imagen de referencia; no corresponde al salón ficticio"
+            fetchPriority="high"
+            className="aspect-[4/3] w-full rounded-xl object-cover"
+          />
+          <figcaption className="mt-2 text-right text-xs text-charcoal/60">
+            Imagen ilustrativa · Benyamin Bohlouli / Unsplash
+          </figcaption>
+        </figure>
       </div>
     </section>
   )
@@ -211,11 +182,11 @@ function Servicios() {
             Servicios
           </span>
           <h2 className="mt-2 font-display text-3xl font-bold text-charcoal md:text-4xl">
-            Todo lo que necesitás para lucir tu mejor versión
+            Cabello, color, barba y manos
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-charcoal/60">
-            Precios ilustrativos a modo de ejemplo — en un sitio real se
-            ajustan a la lista de precios vigente del salón.
+            Lista y precios ilustrativos para esta demo. En un proyecto real se
+            actualizan según los servicios y valores del salón.
           </p>
         </div>
 
@@ -223,7 +194,7 @@ function Servicios() {
           {SERVICIOS.map((servicio) => (
             <div
               key={servicio.categoria}
-              className="rounded-2xl border border-rosewood/10 bg-white p-6 shadow-sm transition-shadow hover:shadow-lg"
+              className="rounded-xl border border-rosewood/15 bg-white p-6 transition-colors hover:border-rosewood/40"
             >
               <h3 className="font-display text-xl font-semibold text-rosewood">
                 {servicio.categoria}
@@ -249,53 +220,16 @@ function Servicios() {
   )
 }
 
-function Galeria() {
-  return (
-    <section id="galeria" className="bg-blush-100/60 px-6 py-24">
-      <div className="mx-auto max-w-6xl">
-        <div className="text-center">
-          <span className="text-sm font-semibold tracking-widest text-rosewood uppercase">
-            Galería
-          </span>
-          <h2 className="mt-2 font-display text-3xl font-bold text-charcoal md:text-4xl">
-            Un vistazo a nuestro trabajo
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-charcoal/60">
-            Imágenes de ejemplo (placeholders) — en el sitio real irían fotos
-            propias del salón y sus trabajos.
-          </p>
-        </div>
-
-        <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {GALERIA_IDS.map((id) => (
-            <div
-              key={id}
-              className="group aspect-square overflow-hidden rounded-xl bg-gold-light shadow-sm"
-            >
-              <img
-                src={`https://picsum.photos/seed/estilo-minas-${id}/400/400`}
-                alt="Placeholder de ejemplo para la galería de Estilo Minas (demo)"
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 function HorariosYUbicacion() {
   return (
     <section className="px-6 py-24">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 md:grid-cols-2">
         <div>
           <span className="text-sm font-semibold tracking-widest text-rosewood uppercase">
-            Horarios &amp; ubicación
+            Horarios de ejemplo · Minas, Uruguay
           </span>
           <h2 className="mt-2 font-display text-3xl font-bold text-charcoal">
-            Te esperamos en el centro de Minas
+            Horarios y referencia local
           </h2>
 
           <div className="mt-8 space-y-4">
@@ -316,14 +250,14 @@ function HorariosYUbicacion() {
           </div>
 
           <p className="mt-6 text-sm text-charcoal/50">
-            Dirección de ejemplo: Calle Ficticia 123, Minas, Lavalleja,
-            Uruguay.
+            Horarios y dirección ilustrativos; la ubicación del mapa es una
+            referencia de la ciudad, no de un salón real.
           </p>
         </div>
 
         <div className="overflow-hidden rounded-2xl shadow-lg">
           <iframe
-            title="Ubicación de ejemplo en Minas, Uruguay"
+            title="Mapa de referencia de Minas, Uruguay; no indica la ubicación de un salón real"
             src="https://www.google.com/maps?q=Minas,+Uruguay&output=embed"
             className="h-80 w-full border-0 md:h-full"
             loading="lazy"
@@ -336,29 +270,53 @@ function HorariosYUbicacion() {
 }
 
 function ContactoCTA() {
+  const [showPreparedMessage, setShowPreparedMessage] = useState(false)
+
   return (
     <section
       id="contacto"
-      className="bg-gradient-to-r from-rosewood to-gold px-6 py-20 text-center"
+      className="bg-rosewood px-6 py-16 text-center"
     >
       <div className="mx-auto max-w-2xl">
         <h2 className="font-display text-3xl font-bold text-white md:text-4xl">
-          ¿Lista/o para tu próximo cambio de look?
+          ¿Querés consultar por un servicio?
         </h2>
         <p className="mt-4 text-white/90">
-          Escribinos por WhatsApp y coordinamos tu turno al instante.
+          Escribinos por WhatsApp para consultar servicios y coordinar una hora.
         </p>
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-8 py-3 text-base font-semibold text-rosewood shadow-lg transition-transform hover:scale-105"
-        >
-          Reservar por WhatsApp ({WHATSAPP_NUMBER_DISPLAY})
-        </a>
+        {WHATSAPP_URL ? (
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-8 py-3 text-base font-semibold text-rosewood transition-colors hover:bg-blush-50"
+          >
+            Consultar por WhatsApp
+          </a>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setShowPreparedMessage(true)}
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-8 py-3 text-base font-semibold text-rosewood transition-colors hover:bg-blush-50"
+          >
+            Preparar consulta
+          </button>
+        )}
         <p className="mt-3 text-xs text-white/70">
-          Número de WhatsApp de ejemplo, no es un contacto real.
+          {WHATSAPP_URL ? 'La disponibilidad se confirma al conversar por WhatsApp.' : 'El WhatsApp se activa al configurar un número real del salón.'}
         </p>
+        {showPreparedMessage && !WHATSAPP_URL && (
+          <label className="mx-auto mt-4 block max-w-lg text-left text-sm text-white">
+            Copiá este mensaje para usarlo con el contacto del salón:
+            <textarea
+              readOnly
+              value={WHATSAPP_MESSAGE_TEXT}
+              rows={2}
+              onFocus={(event) => event.currentTarget.select()}
+              className="mt-2 w-full rounded-lg border border-white/30 bg-white p-3 text-charcoal"
+            />
+          </label>
+        )}
       </div>
     </section>
   )
@@ -370,47 +328,36 @@ function Footer() {
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 md:grid-cols-3">
         <div>
           <span className="font-display text-xl font-semibold">
-            Estilo Minas
+            Tijera &amp; Tinta
           </span>
           <p className="mt-3 text-sm text-blush-50/60">
-            Peluquería &amp; estética — proyecto DEMO de portafolio, no
-            representa un negocio real.
+            Peluquería y estética. Esta página es una demo de portafolio.
           </p>
         </div>
 
         <div>
           <h3 className="text-sm font-semibold tracking-widest text-gold-light uppercase">
-            Contacto (ficticio)
+            Datos ilustrativos
           </h3>
           <ul className="mt-3 space-y-2 text-sm text-blush-50/70">
-            <li>WhatsApp: {WHATSAPP_NUMBER_DISPLAY}</li>
-            <li>Email: hola@estilominas.demo</li>
-            <li>Calle Ficticia 123, Minas, Uruguay</li>
+            <li>{WHATSAPP_NUMBER ? `WhatsApp: +${WHATSAPP_NUMBER}` : 'WhatsApp pendiente de configuración'}</li>
+            <li>Ubicación de referencia: Minas, Lavalleja</li>
           </ul>
         </div>
 
         <div>
           <h3 className="text-sm font-semibold tracking-widest text-gold-light uppercase">
-            Seguinos
+            Más información
           </h3>
-          <div className="mt-3 flex gap-3">
-            {REDES.map((red) => (
-              <span
-                key={red.nombre}
-                title={`${red.nombre} (sin enlace real, solo demo)`}
-                className="flex h-10 w-10 cursor-default items-center justify-center rounded-full bg-white/10 text-lg"
-              >
-                {red.icono}
-              </span>
-            ))}
-          </div>
+          <p className="mt-3 max-w-xs text-sm text-blush-50/70">
+            Las redes sociales se agregan cuando el salón comparte sus perfiles.
+          </p>
         </div>
       </div>
 
       <div className="mx-auto mt-10 max-w-6xl border-t border-white/10 pt-6 text-center text-xs text-blush-50/50">
-        © {new Date().getFullYear()} Estilo Minas — Sitio de EJEMPLO creado
-        como demo de portafolio freelance. Nombre, precios, contacto e
-        imágenes son ficticios.
+        © {new Date().getFullYear()} Tijera &amp; Tinta — demo de portafolio. El
+        nombre, los precios y los datos de contacto son ilustrativos.
       </div>
     </footer>
   )
@@ -423,7 +370,6 @@ function App() {
       <main>
         <Hero />
         <Servicios />
-        <Galeria />
         <HorariosYUbicacion />
         <ContactoCTA />
       </main>

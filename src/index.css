@@ -8,13 +8,14 @@
   --color-blush-50: #fdf4f3;
   --color-blush-100: #fbe7e6;
   --color-blush-200: #f6d3d0;
-  --color-gold: #c9a15a;
+  --color-gold: #9a681c;
   --color-gold-light: #e8d5ab;
   --color-charcoal: #2f2a2c;
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 7rem;
 }
 
 body {
@@ -25,4 +26,24 @@ body {
 
 .font-display {
   font-family: var(--font-display);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
