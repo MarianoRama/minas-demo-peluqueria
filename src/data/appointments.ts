@@ -49,7 +49,7 @@ export const appointmentTimes = [
 
 export function estimatedDuration(service: string) {
   if (/color|mechas|balayage/i.test(service)) return 120
-  if (/hidratación|keratina|alisado|botox/i.test(service)) return 90
+  if (/tratamiento|hidratación|keratina|alisado|botox/i.test(service)) return 90
   if (/manicura|pedicura/i.test(service)) return 60
   return 45
 }
@@ -58,3 +58,23 @@ export function estimatedTotalDuration(services: string[]) {
   return services.reduce((total, service) => total + estimatedDuration(service), 0)
 }
 
+
+
+/** Parses illustrative prices using es-UY separators; unknown formats stay unknown. */
+export function parseReferencePrice(price?: string): number | null {
+  const source = price?.trim().replace(/[^0-9.,-]/g, '') ?? ''
+  if (!source || !/\d/.test(source)) return null
+  let normalized = source
+  if (source.includes('.') && source.includes(',')) {
+    normalized = source.replace(/\./g, '').replace(',', '.')
+  } else if (source.includes(',')) {
+    const fraction = source.split(',').at(-1) ?? ''
+    normalized = fraction.length <= 2
+      ? `${source.slice(0, source.lastIndexOf(',')).replace(/[.,]/g, '')}.${fraction}`
+      : source.replace(/,/g, '')
+  } else if (/\.\d{3}$/.test(source)) {
+    normalized = source.replace(/\./g, '')
+  }
+  const value = Number(normalized)
+  return Number.isFinite(value) && value >= 0 ? value : null
+}
