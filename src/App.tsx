@@ -13,6 +13,7 @@
 
 import { useEffect, useState } from 'react'
 import AdminPanel from './admin/components/AdminPanel'
+import ReservaWizard from './reserva/ReservaWizard'
 
 const WHATSAPP_NUMBER_DISPLAY = '+598 99 000 000'
 const WHATSAPP_NUMBER_LINK = '59899000000' // número de EJEMPLO, no es real
@@ -112,17 +113,15 @@ function Header() {
           <a
             href="#/panel"
             title="Acceso para estilistas (demo)"
-            className="rounded-full border border-rosewood/30 px-3 py-1.5 text-xs font-semibold text-rosewood transition-colors hover:bg-rosewood/10 sm:px-4 sm:py-2 sm:text-sm"
+            className="hidden rounded-full border border-rosewood/30 px-3 py-1.5 text-xs font-semibold text-rosewood transition-colors hover:bg-rosewood/10 sm:inline-block sm:px-4 sm:py-2 sm:text-sm"
           >
             Panel de estilistas
           </a>
           <a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden rounded-full bg-rosewood px-5 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-105 hover:bg-rosewood/90 md:inline-block"
+            href="#/reservar"
+            className="rounded-full bg-rosewood px-4 py-2 text-xs font-semibold text-white shadow-sm transition-transform hover:scale-105 hover:bg-rosewood/90 sm:px-5 sm:text-sm"
           >
-            Reservá tu turno
+            Reservar turno online
           </a>
         </div>
       </div>
@@ -169,18 +168,18 @@ function Hero() {
           </p>
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row md:justify-start">
             <a
+              href="#/reservar"
+              className="inline-flex items-center gap-2 rounded-full bg-rosewood px-8 py-3 text-base font-semibold text-white shadow-lg shadow-rosewood/30 transition-transform hover:scale-105 hover:bg-rosewood/90"
+            >
+              Reservar turno online
+            </a>
+            <a
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-rosewood px-8 py-3 text-base font-semibold text-white shadow-lg shadow-rosewood/30 transition-transform hover:scale-105 hover:bg-rosewood/90"
-            >
-              Reservá tu turno
-            </a>
-            <a
-              href="#servicios"
               className="inline-flex items-center gap-2 rounded-full border border-charcoal/20 px-8 py-3 text-base font-semibold text-charcoal transition-colors hover:border-rosewood hover:text-rosewood"
             >
-              Ver servicios
+              Reservar por WhatsApp
             </a>
           </div>
         </div>
@@ -417,8 +416,14 @@ function Footer() {
             ))}
           </div>
           <a
+            href="#/reservar"
+            className="mt-4 block text-xs text-blush-50/60 underline"
+          >
+            Reservar turno online
+          </a>
+          <a
             href="#/panel"
-            className="mt-4 inline-block text-xs text-blush-50/60 underline"
+            className="mt-2 block text-xs text-blush-50/60 underline"
           >
             Acceso para estilistas (panel demo)
           </a>
@@ -449,10 +454,14 @@ function useHashRoute(): string {
 function App() {
   const hash = useHashRoute()
 
-  // Ruta separada (#/panel) para el panel de administración de
-  // estilistas, distinta de los anclas de la landing (#inicio, etc.).
+  // Rutas separadas (#/panel, #/reservar) del panel de administración de
+  // estilistas y del wizard de reserva pública, distintas de los anclas de
+  // la landing (#inicio, etc.).
   if (hash.startsWith('#/panel')) {
     return <AdminPanel />
+  }
+  if (hash.startsWith('#/reservar')) {
+    return <ReservaWizard />
   }
 
   return (

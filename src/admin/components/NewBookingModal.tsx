@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { SERVICIOS_RESERVA, nombreServicio } from '../data/estilistas'
+import { nombreServicio } from '../data/estilistas'
 import { hoyISO } from '../lib/fechas'
 import { fechaBloqueadaParaEstilista } from '../lib/disponibilidad'
 import { buildWhatsAppConfirmUrl } from '../lib/whatsapp'
-import type { Estilista, Reserva, ServicioId } from '../types'
+import type { Estilista, Reserva, ServicioReserva } from '../types'
 
 function NewBookingModal({
   estilista,
@@ -11,6 +11,7 @@ function NewBookingModal({
   diasCerrados,
   diasLibresSemana,
   diasLibresPersonales,
+  servicios,
   onGuardar,
   onCerrar,
 }: {
@@ -19,12 +20,13 @@ function NewBookingModal({
   diasCerrados: string[]
   diasLibresSemana: number[]
   diasLibresPersonales: string[]
+  servicios: ServicioReserva[]
   onGuardar: (reserva: Reserva) => void
   onCerrar: () => void
 }) {
   const [cliente, setCliente] = useState('')
   const [telefono, setTelefono] = useState('')
-  const [servicio, setServicio] = useState<ServicioId>('corte')
+  const [servicio, setServicio] = useState<string>(servicios[0]?.id ?? '')
   const [fecha, setFecha] = useState(fechaInicial)
   const [hora, setHora] = useState('')
   const [reservaCreada, setReservaCreada] = useState<Reserva | null>(null)
@@ -35,7 +37,8 @@ function NewBookingModal({
     diasLibresSemana,
     diasLibresPersonales,
   )
-  const formValido = cliente.trim() !== '' && telefono.trim() !== '' && hora !== '' && !cerrado
+  const formValido =
+    cliente.trim() !== '' && telefono.trim() !== '' && hora !== '' && servicio !== '' && !cerrado
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -109,10 +112,11 @@ function NewBookingModal({
                 </span>
                 <select
                   value={servicio}
-                  onChange={(e) => setServicio(e.target.value as ServicioId)}
+                  onChange={(e) => setServicio(e.target.value)}
                   className="rounded-xl border border-rosewood/20 px-4 py-3 text-base outline-none focus:border-rosewood"
                 >
-                  {SERVICIOS_RESERVA.map((s) => (
+                  {servicios.length === 0 && <option value="">Sin servicios cargados</option>}
+                  {servicios.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.nombre}
                     </option>
@@ -172,14 +176,14 @@ function NewBookingModal({
               Reserva guardada
             </h2>
             <p className="text-sm text-charcoal/60">
-              {reservaCreada.cliente} — {nombreServicio(reservaCreada.servicio)}{' '}
+              {reservaCreada.cliente} — {nombreServicio(servicios, reservaCreada.servicio)}{' '}
               — {reservaCreada.fecha} {reservaCreada.hora}
             </p>
             <a
               href={buildWhatsAppConfirmUrl({
                 telefono: reservaCreada.telefono,
                 cliente: reservaCreada.cliente,
-                servicioNombre: nombreServicio(reservaCreada.servicio),
+                servicioNombre: nombreServicio(servicios, reservaCreada.servicio),
                 fechaISO: reservaCreada.fecha,
                 hora: reservaCreada.hora,
                 estilistaNombre: estilista.nombre,

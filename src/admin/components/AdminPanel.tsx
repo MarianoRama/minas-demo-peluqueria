@@ -9,21 +9,24 @@ import {
   loadDiasLibresSemana,
   loadPerfilActivo,
   loadReservas,
+  loadServicios,
   savePerfilActivo,
   saveDiasCerrados,
   saveDiasLibresPersonales,
   saveDiasLibresSemana,
   saveReservas,
+  saveServicios,
 } from '../lib/storage'
-import type { Reserva } from '../types'
+import type { Reserva, ServicioReserva } from '../types'
 import ProfileSelect from './ProfileSelect'
 import DaySelector from './DaySelector'
 import DayAgenda from './DayAgenda'
 import NewBookingModal from './NewBookingModal'
 import ClosedDaysCalendar from './ClosedDaysCalendar'
 import MisDiasLibres from './MisDiasLibres'
+import ServiciosPanel from './ServiciosPanel'
 
-type Tab = 'agenda' | 'cerrados'
+type Tab = 'agenda' | 'servicios' | 'cerrados'
 
 function AdminPanel() {
   const [estilistaId, setEstilistaId] = useState<string | null>(() => loadPerfilActivo())
@@ -41,6 +44,7 @@ function AdminPanel() {
   const [diasLibresPersonales, setDiasLibresPersonales] = useState<Record<string, string[]>>(
     () => loadDiasLibresPersonales(),
   )
+  const [servicios, setServicios] = useState<ServicioReserva[]>(() => loadServicios())
   const [fechaSeleccionada, setFechaSeleccionada] = useState(() => hoyISO())
   const [mostrarForm, setMostrarForm] = useState(false)
 
@@ -48,6 +52,7 @@ function AdminPanel() {
   useEffect(() => saveDiasCerrados(diasCerrados), [diasCerrados])
   useEffect(() => saveDiasLibresSemana(diasLibresSemana), [diasLibresSemana])
   useEffect(() => saveDiasLibresPersonales(diasLibresPersonales), [diasLibresPersonales])
+  useEffect(() => saveServicios(servicios), [servicios])
 
   useEffect(() => {
     if (estilistaId) savePerfilActivo(estilistaId)
@@ -76,6 +81,27 @@ function AdminPanel() {
     const confirmar = window.confirm('¿Cancelar esta reserva?')
     if (!confirmar) return
     setReservas((prev) => prev.filter((r) => r.id !== id))
+  }
+
+  function handleConfirmarReserva(id: string) {
+    setReservas((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, estado: 'confirmada' } : r)),
+    )
+  }
+
+  function handleAgregarServicio(nombre: string, precio: string) {
+    const nuevo: ServicioReserva = {
+      id: crypto.randomUUID(),
+      nombre,
+      ...(precio ? { precio } : {}),
+    }
+    setServicios((prev) => [...prev, nuevo])
+  }
+
+  function handleEliminarServicio(id: string) {
+    const confirmar = window.confirm('¿Eliminar este servicio?')
+    if (!confirmar) return
+    setServicios((prev) => prev.filter((s) => s.id !== id))
   }
 
   function toggleDiaCerrado(fechaISO: string) {
@@ -167,9 +193,19 @@ function AdminPanel() {
               reservas={reservasDelDia}
               estilista={estilista}
               fechaISO={fechaSeleccionada}
+              servicios={servicios}
               onCancelar={handleCancelarReserva}
+              onConfirmar={handleConfirmarReserva}
             />
           </>
+        )}
+
+        {tab === 'servicios' && (
+          <ServiciosPanel
+            servicios={servicios}
+            onAgregar={handleAgregarServicio}
+            onEliminar={handleEliminarServicio}
+          />
         )}
 
         {tab === 'cerrados' && (
@@ -209,6 +245,14 @@ function AdminPanel() {
             📅 Agenda
           </button>
           <button
+            onClick={() => setTab('servicios')}
+            className={`flex-1 py-3.5 text-center text-sm font-semibold transition-colors ${
+              tab === 'servicios' ? 'text-rosewood' : 'text-charcoal/40'
+            }`}
+          >
+            💈 Servicios
+          </button>
+          <button
             onClick={() => setTab('cerrados')}
             className={`flex-1 py-3.5 text-center text-sm font-semibold transition-colors ${
               tab === 'cerrados' ? 'text-rosewood' : 'text-charcoal/40'
@@ -227,6 +271,7 @@ function AdminPanel() {
           diasCerrados={diasCerrados}
           diasLibresSemana={diasLibresSemanaEstilista}
           diasLibresPersonales={diasLibresPersonalesEstilista}
+          servicios={servicios}
           onGuardar={handleGuardarReserva}
           onCerrar={() => setMostrarForm(false)}
         />

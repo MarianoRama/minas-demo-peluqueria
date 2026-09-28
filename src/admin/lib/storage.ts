@@ -1,4 +1,5 @@
-import type { Reserva } from '../types'
+import type { Reserva, ServicioReserva } from '../types'
+import { SERVICIOS_SEED } from '../data/estilistas'
 
 // Mismo criterio que la demo de pádel del mismo proyecto: useState +
 // localStorage, sin backend. Ver D:\Proyectos\minas-demos\padel\src\components\Booking.tsx
@@ -9,6 +10,9 @@ const PERFIL_ACTIVO_KEY = 'estilo-minas.perfil-activo'
 // que es el cierre global del salón para las 3 estilistas).
 const DIAS_LIBRES_SEMANA_KEY = 'estilo-minas.dias-libres-semana'
 const DIAS_LIBRES_PERSONALES_KEY = 'estilo-minas.dias-libres-personales'
+// Lista de servicios ofrecidos, compartida entre las 3 estilistas (no es
+// personal como los días libres). Editable desde el panel interno.
+const SERVICIOS_KEY = 'estilo-minas.servicios'
 
 export function loadReservas(): Reserva[] {
   try {
@@ -88,4 +92,25 @@ export function savePerfilActivo(estilistaId: string) {
 
 export function limpiarPerfilActivo() {
   window.localStorage.removeItem(PERFIL_ACTIVO_KEY)
+}
+
+// Lista de servicios editable (panel interno, pestaña "Servicios") y leída
+// tanto por el selector del panel interno (NewBookingModal) como por el
+// paso 1 del wizard de reserva pública. Se siembra una sola vez desde
+// SERVICIOS_SEED la primera vez que no hay nada guardado.
+export function loadServicios(): ServicioReserva[] {
+  try {
+    const raw = window.localStorage.getItem(SERVICIOS_KEY)
+    if (!raw) return SERVICIOS_SEED
+    const parsed = JSON.parse(raw)
+    return Array.isArray(parsed) && parsed.length > 0
+      ? (parsed as ServicioReserva[])
+      : SERVICIOS_SEED
+  } catch {
+    return SERVICIOS_SEED
+  }
+}
+
+export function saveServicios(servicios: ServicioReserva[]) {
+  window.localStorage.setItem(SERVICIOS_KEY, JSON.stringify(servicios))
 }

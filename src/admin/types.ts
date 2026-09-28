@@ -21,21 +21,36 @@ export interface Estilista {
   diasLibresSemana: number[]
 }
 
-export type ServicioId = 'corte' | 'color' | 'barba' | 'tratamiento'
-
+/**
+ * Los servicios ya no son una lista fija: se editan desde el panel interno
+ * (pestaña "Servicios") y se guardan en localStorage (ver `lib/storage.ts`,
+ * sembrado inicialmente desde `data/estilistas.ts`). Por eso el id es un
+ * string libre en vez de una unión fija.
+ */
 export interface ServicioReserva {
-  id: ServicioId
+  id: string
   nombre: string
+  /** Precio ilustrativo, opcional (ej. "$450"). */
+  precio?: string
 }
 
-export type EstadoReserva = 'confirmada' | 'cancelada'
+/**
+ * - 'confirmada': turno ya acordado en persona y cargado por la estilista
+ *   directamente en el panel interno.
+ * - 'pendiente': turno reservado por el propio cliente desde el sitio
+ *   público (wizard de reserva online), a la espera de que la estilista lo
+ *   confirme.
+ * - 'cancelada': valor histórico, hoy las cancelaciones se borran del
+ *   arreglo de reservas en vez de marcarse con este estado.
+ */
+export type EstadoReserva = 'confirmada' | 'pendiente' | 'cancelada'
 
 export interface Reserva {
   id: string
   estilistaId: string
   cliente: string
   telefono: string
-  servicio: ServicioId
+  servicio: string
   fecha: string // YYYY-MM-DD
   hora: string // HH:MM
   estado: EstadoReserva
