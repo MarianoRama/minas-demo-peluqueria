@@ -2,9 +2,10 @@ import type { Estilista, ServicioReserva } from '../types'
 
 // Estilistas de EJEMPLO — nombres ficticios para la demo.
 export const ESTILISTAS: Estilista[] = [
-  { id: 'valentina', nombre: 'Valentina Ferreira' },
-  { id: 'lucia', nombre: 'Lucía Gómez' },
-  { id: 'martin', nombre: 'Martín Silva' },
+  { id: 'valentina', nombre: 'Valentina Ferreira', diasLibresSemana: [] },
+  { id: 'lucia', nombre: 'Lucía Gómez', diasLibresSemana: [] },
+  // Ejemplo: Martín no atiende los martes.
+  { id: 'martin', nombre: 'Martín Silva', diasLibresSemana: [2] },
 ]
 
 export const SERVICIOS_RESERVA: ServicioReserva[] = [

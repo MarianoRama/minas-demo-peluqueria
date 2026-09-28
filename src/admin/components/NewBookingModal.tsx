@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { SERVICIOS_RESERVA, nombreServicio } from '../data/estilistas'
 import { hoyISO } from '../lib/fechas'
+import { fechaBloqueadaParaEstilista } from '../lib/disponibilidad'
 import { buildWhatsAppConfirmUrl } from '../lib/whatsapp'
 import type { Estilista, Reserva, ServicioId } from '../types'
 
@@ -8,12 +9,16 @@ function NewBookingModal({
   estilista,
   fechaInicial,
   diasCerrados,
+  diasLibresSemana,
+  diasLibresPersonales,
   onGuardar,
   onCerrar,
 }: {
   estilista: Estilista
   fechaInicial: string
   diasCerrados: string[]
+  diasLibresSemana: number[]
+  diasLibresPersonales: string[]
   onGuardar: (reserva: Reserva) => void
   onCerrar: () => void
 }) {
@@ -24,7 +29,12 @@ function NewBookingModal({
   const [hora, setHora] = useState('')
   const [reservaCreada, setReservaCreada] = useState<Reserva | null>(null)
 
-  const cerrado = diasCerrados.includes(fecha)
+  const cerrado = fechaBloqueadaParaEstilista(
+    fecha,
+    diasCerrados,
+    diasLibresSemana,
+    diasLibresPersonales,
+  )
   const formValido = cliente.trim() !== '' && telefono.trim() !== '' && hora !== '' && !cerrado
 
   function handleSubmit(e: React.FormEvent) {
@@ -140,8 +150,9 @@ function NewBookingModal({
 
               {cerrado && (
                 <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-600">
-                  Este día está marcado como cerrado. Elegí otra fecha o
-                  reabrilo desde "Días cerrados".
+                  Este día no está disponible (cierre del salón o día libre
+                  de {estilista.nombre}). Elegí otra fecha o revisá "Días
+                  cerrados".
                 </p>
               )}
 

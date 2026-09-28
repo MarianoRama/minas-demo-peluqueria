@@ -1,13 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ESTILISTAS } from '../data/estilistas'
 import { formatoLargo, hoyISO } from '../lib/fechas'
+import { fechaBloqueadaParaEstilista } from '../lib/disponibilidad'
 import {
   limpiarPerfilActivo,
   loadDiasCerrados,
+  loadDiasLibresPersonales,
+  loadDiasLibresSemana,
   loadPerfilActivo,
   loadReservas,
   savePerfilActivo,
   saveDiasCerrados,
+  saveDiasLibresPersonales,
+  saveDiasLibresSemana,
   saveReservas,
 } from '../lib/storage'
 import type { Reserva } from '../types'
@@ -16,6 +21,7 @@ import DaySelector from './DaySelector'
 import DayAgenda from './DayAgenda'
 import NewBookingModal from './NewBookingModal'
 import ClosedDaysCalendar from './ClosedDaysCalendar'
+import MisDiasLibres from './MisDiasLibres'
 
 type Tab = 'agenda' | 'cerrados'
 
@@ -24,11 +30,24 @@ function AdminPanel() {
   const [tab, setTab] = useState<Tab>('agenda')
   const [reservas, setReservas] = useState<Reserva[]>(() => loadReservas())
   const [diasCerrados, setDiasCerrados] = useState<string[]>(() => loadDiasCerrados())
+  const [diasLibresSemana, setDiasLibresSemana] = useState<Record<string, number[]>>(() => {
+    const guardado = loadDiasLibresSemana()
+    const inicial: Record<string, number[]> = {}
+    for (const e of ESTILISTAS) {
+      inicial[e.id] = guardado[e.id] ?? e.diasLibresSemana
+    }
+    return inicial
+  })
+  const [diasLibresPersonales, setDiasLibresPersonales] = useState<Record<string, string[]>>(
+    () => loadDiasLibresPersonales(),
+  )
   const [fechaSeleccionada, setFechaSeleccionada] = useState(() => hoyISO())
   const [mostrarForm, setMostrarForm] = useState(false)
 
   useEffect(() => saveReservas(reservas), [reservas])
   useEffect(() => saveDiasCerrados(diasCerrados), [diasCerrados])
+  useEffect(() => saveDiasLibresSemana(diasLibresSemana), [diasLibresSemana])
+  useEffect(() => saveDiasLibresPersonales(diasLibresPersonales), [diasLibresPersonales])
 
   useEffect(() => {
     if (estilistaId) savePerfilActivo(estilistaId)
@@ -67,10 +86,40 @@ function AdminPanel() {
     )
   }
 
+  function toggleDiaSemanaLibre(dia: number) {
+    const id = estilista!.id
+    setDiasLibresSemana((prev) => {
+      const actual = prev[id] ?? []
+      const nuevo = actual.includes(dia)
+        ? actual.filter((d) => d !== dia)
+        : [...actual, dia]
+      return { ...prev, [id]: nuevo }
+    })
+  }
+
+  function toggleDiaPersonal(fechaISO: string) {
+    const id = estilista!.id
+    setDiasLibresPersonales((prev) => {
+      const actual = prev[id] ?? []
+      const nuevo = actual.includes(fechaISO)
+        ? actual.filter((d) => d !== fechaISO)
+        : [...actual, fechaISO]
+      return { ...prev, [id]: nuevo }
+    })
+  }
+
+  const diasLibresSemanaEstilista = diasLibresSemana[estilistaId] ?? []
+  const diasLibresPersonalesEstilista = diasLibresPersonales[estilistaId] ?? []
+
   const reservasDelDia = reservas.filter(
     (r) => r.estilistaId === estilistaId && r.fecha === fechaSeleccionada,
   )
-  const diaCerrado = diasCerrados.includes(fechaSeleccionada)
+  const diaCerrado = fechaBloqueadaParaEstilista(
+    fechaSeleccionada,
+    diasCerrados,
+    diasLibresSemanaEstilista,
+    diasLibresPersonalesEstilista,
+  )
 
   return (
     <div className="min-h-screen bg-blush-50 pb-28">
@@ -100,6 +149,8 @@ function AdminPanel() {
               fechaSeleccionada={fechaSeleccionada}
               onChange={setFechaSeleccionada}
               diasCerrados={diasCerrados}
+              diasLibresSemana={diasLibresSemanaEstilista}
+              diasLibresPersonales={diasLibresPersonalesEstilista}
             />
             <p className="mb-3 text-sm font-medium text-charcoal/60 capitalize">
               {formatoLargo(fechaSeleccionada)}
@@ -122,10 +173,19 @@ function AdminPanel() {
         )}
 
         {tab === 'cerrados' && (
-          <ClosedDaysCalendar
-            diasCerrados={diasCerrados}
-            onToggle={toggleDiaCerrado}
-          />
+          <>
+            <MisDiasLibres
+              estilista={estilista}
+              diasLibresSemana={diasLibresSemanaEstilista}
+              onToggleDiaSemana={toggleDiaSemanaLibre}
+              diasLibresPersonales={diasLibresPersonalesEstilista}
+              onTogglePersonal={toggleDiaPersonal}
+            />
+            <ClosedDaysCalendar
+              diasCerrados={diasCerrados}
+              onToggle={toggleDiaCerrado}
+            />
+          </>
         )}
       </main>
 
@@ -165,6 +225,8 @@ function AdminPanel() {
           estilista={estilista}
           fechaInicial={fechaSeleccionada}
           diasCerrados={diasCerrados}
+          diasLibresSemana={diasLibresSemanaEstilista}
+          diasLibresPersonales={diasLibresPersonalesEstilista}
           onGuardar={handleGuardarReserva}
           onCerrar={() => setMostrarForm(false)}
         />

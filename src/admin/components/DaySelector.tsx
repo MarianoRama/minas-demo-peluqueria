@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { formatoCorto, hoyISO, sumarDias } from '../lib/fechas'
+import { fechaBloqueadaParaEstilista } from '../lib/disponibilidad'
 
 const DIAS_ADELANTE = 14
 
@@ -7,10 +8,14 @@ function DaySelector({
   fechaSeleccionada,
   onChange,
   diasCerrados,
+  diasLibresSemana,
+  diasLibresPersonales,
 }: {
   fechaSeleccionada: string
   onChange: (fecha: string) => void
   diasCerrados: string[]
+  diasLibresSemana: number[]
+  diasLibresPersonales: string[]
 }) {
   const dias = useMemo(() => {
     const hoy = hoyISO()
@@ -21,7 +26,12 @@ function DaySelector({
     <div className="-mx-4 mb-4 flex gap-2 overflow-x-auto px-4 pb-2">
       {dias.map((iso) => {
         const { label, sublabel } = formatoCorto(iso)
-        const cerrado = diasCerrados.includes(iso)
+        const cerrado = fechaBloqueadaParaEstilista(
+          iso,
+          diasCerrados,
+          diasLibresSemana,
+          diasLibresPersonales,
+        )
         const activo = iso === fechaSeleccionada
         return (
           <button

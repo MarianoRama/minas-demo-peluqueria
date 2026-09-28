@@ -11,6 +11,14 @@
 export interface Estilista {
   id: string
   nombre: string
+  /**
+   * Días de la semana en los que este estilista NUNCA atiende (recurrente,
+   * todas las semanas). 0 = domingo, 1 = lunes, ..., 6 = sábado.
+   * Es el valor por defecto/semilla; el usuario puede editarlo desde el
+   * panel y esa edición se persiste aparte en localStorage (ver
+   * `lib/storage.ts`).
+   */
+  diasLibresSemana: number[]
 }
 
 export type ServicioId = 'corte' | 'color' | 'barba' | 'tratamiento'

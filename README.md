@@ -46,16 +46,22 @@ landing).
 - **Días cerrados**: un calendario donde se toca un día para marcarlo
   cerrado (feriado, día libre) y bloquear que se carguen turnos ese día,
   para cualquier estilista.
+- **Mis días libres (disponibilidad personal)**: además del cierre global,
+  cada estilista puede marcar sus propios días de semana recurrentes sin
+  atender (ej. "no trabajo los martes") y fechas puntuales sueltas (ej. un
+  trámite), sin afectar a las otras estilistas. Se ve en la misma pestaña
+  "Días cerrados", arriba del calendario global.
 - **Confirmación por WhatsApp**: cada reserva creada muestra un botón que
   abre `https://wa.me/<telefono>?text=<mensaje>` con el turno ya redactado
   (link de "click to chat", sin necesitar la API oficial). El punto exacto
   donde en el futuro se conectaría la API de WhatsApp Business está marcado
   con un comentario en `src/admin/lib/whatsapp.ts`.
 
-**Persistencia**: todo (estilistas activos, reservas, días cerrados) se
-guarda en `localStorage` del navegador, igual que el patrón usado en la demo
-de pádel del mismo proyecto — no hay backend ni base de datos real. Es una
-demo de portafolio, no un sistema en producción.
+**Persistencia**: todo (estilistas activos, reservas, días cerrados,
+disponibilidad personal por estilista) se guarda en `localStorage` del
+navegador, igual que el patrón usado en la demo de pádel del mismo proyecto
+— no hay backend ni base de datos real. Es una demo de portafolio, no un
+sistema en producción.
 
 ## Cómo correrlo
 
