@@ -53,3 +53,8 @@ export function estimatedDuration(service: string) {
   if (/manicura|pedicura/i.test(service)) return 60
   return 45
 }
+
+export function estimatedTotalDuration(services: string[]) {
+  return services.reduce((total, service) => total + estimatedDuration(service), 0)
+}
+

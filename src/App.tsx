@@ -211,7 +211,7 @@ function Servicios({ onChooseService }: { onChooseService: (service: string) => 
                   >
                     <span className="min-w-0 text-charcoal/80">{item.nombre}</span>
                     <span className="shrink-0 font-semibold text-gold">{item.precio}</span>
-                    <button type="button" onClick={() => { onChooseService(item.nombre); document.getElementById('reservar')?.scrollIntoView({ behavior: 'smooth' }) }} className="shrink-0 rounded-full border border-rosewood/30 px-3 py-1.5 text-xs font-semibold text-rosewood hover:bg-rosewood hover:text-white">Elegir</button>
+                    <button type="button" onClick={() => { onChooseService(item.nombre); document.getElementById('reservar')?.scrollIntoView({ behavior: 'smooth' }) }} className="shrink-0 rounded-full border border-rosewood/30 px-3 py-1.5 text-xs font-semibold text-rosewood hover:bg-rosewood hover:text-white">Sumar al turno</button>
                   </li>
                 ))}
               </ul>
@@ -368,14 +368,15 @@ function Footer() {
 
 function App() {
   const [requestedService, setRequestedService] = useState<string | undefined>()
+  const [serviceRequestId, setServiceRequestId] = useState(0)
 
   return (
     <div className="min-h-screen bg-blush-50">
       <Header />
       <main>
         <Hero />
-        <Servicios onChooseService={setRequestedService} />
-        <Booking initialService={requestedService} />
+        <Servicios onChooseService={(service) => { setRequestedService(service); setServiceRequestId((id) => id + 1) }} />
+        <Booking initialService={requestedService} serviceRequestId={serviceRequestId} />
         <Products />
         <HorariosYUbicacion />
         <ContactoCTA />
@@ -386,3 +387,6 @@ function App() {
 }
 
 export default App
+
+
+
