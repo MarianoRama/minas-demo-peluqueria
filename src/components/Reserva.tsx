@@ -1,5 +1,7 @@
-import { useMemo, useState } from 'react'
-import { CATEGORIAS, EQUIPO, NEGOCIO, SERVICIOS, type Servicio } from '../data'
+import { useEffect, useMemo, useState } from 'react'
+import { CATEGORIAS, type DiaSemana, type Servicio } from '../data'
+import { useDatos } from '../data/useDatos'
+import { useSeleccionReserva } from '../lib/useSeleccionReserva'
 import {
   dateKey,
   estaCerrado,
@@ -31,6 +33,12 @@ type Props = {
 }
 
 export function Reserva({ onReservaConfirmada }: Props) {
+  const { datos } = useDatos()
+  const { negocio: NEGOCIO } = datos
+  const SERVICIOS = useMemo(() => datos.servicios.filter((s) => s.activo), [datos.servicios])
+  const EQUIPO = useMemo(() => datos.equipo.filter((p) => p.activo), [datos.equipo])
+  const { senal: senalSeleccion, servicioId: servicioPedido } = useSeleccionReserva()
+
   const [paso, setPaso] = useState(0)
   const [categoriaActiva, setCategoriaActiva] = useState<string>(CATEGORIAS[0])
   const [servicioId, setServicioId] = useState<string | null>(null)
@@ -46,10 +54,21 @@ export function Reserva({ onReservaConfirmada }: Props) {
   const servicio = SERVICIOS.find((s) => s.id === servicioId) ?? null
   const profesional = EQUIPO.find((p) => p.id === profesionalId) ?? null
 
+  // Un servicio elegido desde la carta de precios salta directo al paso 2
+  // (elegir profesional) para no hacer elegir el mismo servicio dos veces.
+  useEffect(() => {
+    if (!servicioPedido) return
+    const existe = SERVICIOS.some((s) => s.id === servicioPedido)
+    if (!existe) return
+    setServicioId(servicioPedido)
+    setPaso(1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [senalSeleccion])
+
   const slots = useMemo(() => {
     if (!fecha || !servicio) return []
-    return generarSlots(fecha, servicio.duracionMin)
-  }, [fecha, servicio])
+    return generarSlots(fecha, servicio.duracionMin, NEGOCIO.horarioSemana, NEGOCIO.diasBloqueados)
+  }, [fecha, servicio, NEGOCIO.horarioSemana, NEGOCIO.diasBloqueados])
 
   function elegirServicio(s: Servicio) {
     setServicioId(s.id)
@@ -95,6 +114,7 @@ export function Reserva({ onReservaConfirmada }: Props) {
       nombreCliente: nombre.trim(),
       telefonoCliente: telefono.trim(),
       creadoEn: new Date().toISOString(),
+      estado: 'pendiente',
     }
 
     guardarReserva(reserva)
@@ -297,7 +317,9 @@ export function Reserva({ onReservaConfirmada }: Props) {
 
             <div className="mt-6 -mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
               {dias.map((d) => {
-                const cerrado = estaCerrado(d)
+                const cerradoSalon = estaCerrado(d, NEGOCIO.horarioSemana, NEGOCIO.diasBloqueados)
+                const profesionalLibre = !profesional || profesional.diasTrabaja.includes(d.getDay() as DiaSemana)
+                const cerrado = cerradoSalon || !profesionalLibre
                 const seleccionado = fecha && dateKey(fecha) === dateKey(d)
                 return (
                   <button
@@ -323,11 +345,19 @@ export function Reserva({ onReservaConfirmada }: Props) {
               })}
             </div>
 
-            {fecha && estaCerrado(fecha) && (
-              <p className="mt-4 text-sm text-ink/50">Cerrado los domingos — elegí otro día.</p>
+            {fecha && estaCerrado(fecha, NEGOCIO.horarioSemana, NEGOCIO.diasBloqueados) && (
+              <p className="mt-4 text-sm text-ink/50">Ese día no abrimos. Elegí otra fecha.</p>
             )}
 
-            {fecha && !estaCerrado(fecha) && (
+            {fecha && profesional && !profesional.diasTrabaja.includes(fecha.getDay() as DiaSemana) && (
+              <p className="mt-4 text-sm text-ink/50">
+                {profesional.nombre.split(' ')[0]} no atiende ese día. Elegí otra fecha o "Cualquiera disponible".
+              </p>
+            )}
+
+            {fecha &&
+              !estaCerrado(fecha, NEGOCIO.horarioSemana, NEGOCIO.diasBloqueados) &&
+              (!profesional || profesional.diasTrabaja.includes(fecha.getDay() as DiaSemana)) && (
               <div className="mt-6">
                 {slots.length === 0 ? (
                   <p className="text-sm text-ink/50">
@@ -357,7 +387,7 @@ export function Reserva({ onReservaConfirmada }: Props) {
               </div>
             )}
 
-            {fecha && hora && !estaCerrado(fecha) && (
+            {fecha && hora && !estaCerrado(fecha, NEGOCIO.horarioSemana, NEGOCIO.diasBloqueados) && (
               <button
                 type="button"
                 onClick={() => setPaso(3)}

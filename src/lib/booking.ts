@@ -1,6 +1,8 @@
-import { HORARIO_POR_DIA } from '../data'
+import type { BloqueHorario, DiaBloqueado, DiaSemana } from '../data'
 
 const STORAGE_KEY = 'tijera-tinta:turnos'
+
+export type EstadoTurno = 'pendiente' | 'atendido' | 'cancelado'
 
 export type Reserva = {
   id: string
@@ -15,6 +17,7 @@ export type Reserva = {
   nombreCliente: string
   telefonoCliente: string
   creadoEn: string
+  estado: EstadoTurno
 }
 
 /** YYYY-MM-DD en horario local, sin desfasajes de zona horaria. */
@@ -37,8 +40,23 @@ export function proximosDias(cantidad = 10): Date[] {
   return dias
 }
 
-export function estaCerrado(d: Date): boolean {
-  return HORARIO_POR_DIA[d.getDay()] === null
+function franjaDelDia(horarioSemana: BloqueHorario[], dia: DiaSemana) {
+  return horarioSemana.find((b) => b.dia === dia) ?? null
+}
+
+export function estaBloqueadoManual(d: Date, diasBloqueados: DiaBloqueado[]): DiaBloqueado | null {
+  const key = dateKey(d)
+  return diasBloqueados.find((b) => b.fecha === key) ?? null
+}
+
+export function estaCerrado(
+  d: Date,
+  horarioSemana: BloqueHorario[],
+  diasBloqueados: DiaBloqueado[] = [],
+): boolean {
+  const franja = franjaDelDia(horarioSemana, d.getDay() as DiaSemana)
+  if (!franja || franja.apertura === null || franja.cierre === null) return true
+  return estaBloqueadoManual(d, diasBloqueados) !== null
 }
 
 /** Hash simple y determinístico de un string a entero positivo. */
@@ -60,9 +78,12 @@ function hashString(s: string): number {
 export function generarSlots(
   fecha: Date,
   duracionMin: number,
+  horarioSemana: BloqueHorario[],
+  diasBloqueados: DiaBloqueado[] = [],
 ): { hora: string; ocupado: boolean }[] {
-  const franja = HORARIO_POR_DIA[fecha.getDay()]
-  if (!franja) return []
+  if (estaCerrado(fecha, horarioSemana, diasBloqueados)) return []
+  const franja = franjaDelDia(horarioSemana, fecha.getDay() as DiaSemana)
+  if (!franja || franja.apertura === null || franja.cierre === null) return []
 
   const PASO_MIN = 30
   const slots: { hora: string; ocupado: boolean }[] = []
@@ -110,7 +131,7 @@ function guardarTodas(datos: Record<string, Reserva[]>) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(datos))
   } catch {
-    // localStorage no disponible (modo privado, cuota, etc.) — no rompemos la app.
+    // localStorage no disponible (modo privado, cuota, etc.): no rompemos la app.
   }
 }
 
@@ -118,12 +139,13 @@ export function obtenerReservas(): Reserva[] {
   const todas = leerTodas()
   return Object.values(todas)
     .flat()
+    .map((r) => ({ ...r, estado: r.estado ?? ('pendiente' as EstadoTurno) }))
     .sort((a, b) => `${a.fecha}${a.hora}`.localeCompare(`${b.fecha}${b.hora}`))
 }
 
 export function reservasDe(fecha: string): Reserva[] {
   const todas = leerTodas()
-  return todas[fecha] ?? []
+  return (todas[fecha] ?? []).map((r) => ({ ...r, estado: r.estado ?? ('pendiente' as EstadoTurno) }))
 }
 
 export function guardarReserva(reserva: Reserva) {
@@ -149,6 +171,14 @@ export function cancelarReserva(id: string) {
   for (const fecha of Object.keys(todas)) {
     todas[fecha] = todas[fecha].filter((r) => r.id !== id)
     if (todas[fecha].length === 0) delete todas[fecha]
+  }
+  guardarTodas(todas)
+}
+
+export function cambiarEstadoReserva(id: string, estado: EstadoTurno) {
+  const todas = leerTodas()
+  for (const fecha of Object.keys(todas)) {
+    todas[fecha] = todas[fecha].map((r) => (r.id === id ? { ...r, estado } : r))
   }
   guardarTodas(todas)
 }

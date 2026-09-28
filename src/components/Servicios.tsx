@@ -1,6 +1,8 @@
 import type { ComponentType } from 'react'
-import { CATEGORIAS, SERVICIOS } from '../data'
-import { IconTijera, IconGota, IconMano, IconNavaja, IconSecador } from './icons'
+import { CATEGORIAS } from '../data'
+import { useDatos } from '../data/useDatos'
+import { useSeleccionReserva } from '../lib/useSeleccionReserva'
+import { IconTijera, IconGota, IconMano, IconNavaja, IconSecador, IconSello } from './icons'
 import { useReveal } from '../hooks/useReveal'
 
 const ICONO_CATEGORIA: Record<string, ComponentType<{ className?: string }>> = {
@@ -17,27 +19,33 @@ function formatearPrecio(precio: number) {
 
 export function Servicios() {
   const ref = useReveal<HTMLDivElement>()
+  const { datos } = useDatos()
+  const { pedirReserva } = useSeleccionReserva()
+  const servicios = datos.servicios.filter((s) => s.activo)
+
   return (
-    <section id="servicios" className="px-5 py-20 sm:px-8 sm:py-28">
+    <section id="servicios" className="relative px-5 py-20 sm:px-8 sm:py-28">
       <div ref={ref} className="mx-auto max-w-5xl">
         <div data-reveal className="grid gap-6 md:grid-cols-12 md:items-end">
           <div className="md:col-span-8">
-            <p className="text-xs font-semibold tracking-[0.25em] text-wine uppercase">
-              Lista de precios
-            </p>
-            <h2 className="mt-2 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+            <h2 className="font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
               La carta del salón
             </h2>
           </div>
           <p className="text-sm text-ink/60 md:col-span-4">
-            Precios de referencia, en pesos uruguayos. Duración estimada por
-            servicio — se ajusta según largo y tipo de cabello.
+            Precios de referencia en pesos uruguayos. La duración cambia un
+            poco según el largo y el tipo de cabello de cada uno.
           </p>
         </div>
 
-        <div className="mt-14 md:columns-2 md:gap-x-14">
+        <div className="textura-papel relative mt-14 border border-ink/12 bg-paper p-5 sm:p-10 md:columns-2 md:gap-x-14">
+          <IconSello
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-7 -right-4 hidden h-24 w-24 text-wine/60 sm:-right-6 sm:block sm:h-28 sm:w-28"
+          />
           {CATEGORIAS.map((categoria) => {
-            const items = SERVICIOS.filter((s) => s.categoria === categoria)
+            const items = servicios.filter((s) => s.categoria === categoria)
+            if (items.length === 0) return null
             const Icono = ICONO_CATEGORIA[categoria]
             return (
               <div key={categoria} data-reveal className="mb-14 break-inside-avoid">
@@ -47,21 +55,36 @@ export function Servicios() {
                 </div>
                 <ul className="mt-5 space-y-4">
                   {items.map((item) => (
-                    <li
-                      key={item.id}
-                      className="tarjeta-viva flex items-baseline gap-3 border border-transparent px-2 py-1 hover:border-ink/10 hover:bg-paper"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-baseline gap-2">
-                          <span className="font-medium text-ink">{item.nombre}</span>
-                          <span className="linea-punteada h-0 flex-1" aria-hidden="true" />
-                          <span className="font-display text-lg font-semibold whitespace-nowrap text-wine">
-                            {formatearPrecio(item.precio)}
-                          </span>
-                        </div>
-                        <div className="mt-1 flex flex-wrap items-baseline gap-x-3 text-xs text-ink/50">
-                          {item.descripcion && <span>{item.descripcion}</span>}
-                          <span>· {item.duracionMin} min</span>
+                    <li key={item.id} className="relative">
+                      {item.destacado && (
+                        <span
+                          aria-hidden="true"
+                          className="font-hand pointer-events-none absolute -top-4 right-1 -rotate-6 text-base text-wine sm:-top-5 sm:right-4 sm:text-lg"
+                        >
+                          ¡lo más pedido!
+                        </span>
+                      )}
+                      <div className="tarjeta-viva flex items-baseline gap-3 border border-transparent px-2 py-1 hover:border-ink/10 hover:bg-cream/60">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-baseline gap-2">
+                            <span className="font-medium text-ink">{item.nombre}</span>
+                            <span className="linea-punteada h-0 flex-1" aria-hidden="true" />
+                            <span className="font-display text-lg font-semibold whitespace-nowrap text-wine">
+                              {formatearPrecio(item.precio)}
+                            </span>
+                          </div>
+                          <div className="mt-1 flex flex-wrap items-baseline gap-x-3 text-xs text-ink/50">
+                            {item.descripcion && <span>{item.descripcion}</span>}
+                            <span>· {item.duracionMin} min</span>
+                            <button
+                              type="button"
+                              onClick={() => pedirReserva(item.id)}
+                              className="enlace-flecha ml-auto inline-flex items-center gap-1 py-1 font-semibold text-wine hover:text-wine-dark"
+                            >
+                              Reservar
+                              <span className="enlace-flecha-icono">→</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </li>

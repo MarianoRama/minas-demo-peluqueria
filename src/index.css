@@ -3,10 +3,12 @@
 @import "@fontsource/work-sans/400.css";
 @import "@fontsource/work-sans/500.css";
 @import "@fontsource/work-sans/600.css";
+@import "@fontsource/caveat/600.css";
 
 @theme {
   --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
   --font-sans: "Work Sans", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-hand: "Caveat", cursive;
 
   /* crema / hueso */
   --color-cream: #f5efe2;
@@ -32,6 +34,25 @@ body {
 .font-display {
   font-family: var(--font-display);
   font-variation-settings: 'opsz' 40;
+}
+
+.font-hand {
+  font-family: var(--font-hand);
+  line-height: 1;
+}
+
+/* esquina de cinta de papel sobre fotos/ilustraciones "pegadas" */
+.cinta-esquina::before {
+  content: '';
+  position: absolute;
+  top: -0.6rem;
+  left: 50%;
+  width: 3.2rem;
+  height: 1.1rem;
+  transform: translateX(-50%) rotate(-3deg);
+  background: rgba(245, 239, 226, 0.75);
+  border: 1px solid rgba(28, 22, 17, 0.12);
+  box-shadow: 0 2px 3px rgba(28, 22, 17, 0.12);
 }
 
 /* textura sutil de papel */

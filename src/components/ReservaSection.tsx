@@ -11,15 +11,12 @@ export function ReservaSection() {
     <section id="reserva" className="bg-cream-dim px-5 py-20 sm:px-8 sm:py-28">
       <div ref={ref} className="mx-auto max-w-3xl">
         <div data-reveal>
-          <p className="text-xs font-semibold tracking-[0.25em] text-wine uppercase">
-            Reservá online
-          </p>
-          <h2 className="mt-2 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+          <h2 className="font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
             Sacá tu turno en 4 pasos
           </h2>
           <p className="mt-4 max-w-xl text-ink/65">
-            Elegí el servicio, quién te atiende y el horario que más te
-            convenga. Confirmá por WhatsApp y listo.
+            Elegís el servicio, quién te atiende y el horario. Confirmás por
+            WhatsApp y ya está anotado.
           </p>
         </div>
 

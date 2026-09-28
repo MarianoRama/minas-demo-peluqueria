@@ -1,13 +1,9 @@
-import { NEGOCIO } from '../data'
+import { useDatos } from '../data/useDatos'
 import { IconRetratoEditorial } from './icons'
 
-const CIFRAS = [
-  { numero: '17', detalle: 'años en el centro de Minas' },
-  { numero: '4', detalle: 'profesionales en el salón' },
-  { numero: '30', detalle: 'min el corte más rápido' },
-]
-
 export function Hero() {
+  const { datos } = useDatos()
+  const { negocio: NEGOCIO } = datos
   return (
     <section id="inicio" className="textura-papel border-b border-ink/10">
       <div className="mx-auto grid max-w-6xl gap-0 md:grid-cols-12">
@@ -21,9 +17,8 @@ export function Hero() {
             y buena charla.
           </h1>
           <p className="mt-6 max-w-md text-lg leading-relaxed text-ink/70">
-            Cortes, color y barbería a la vieja usanza, con la comodidad de
-            reservar tu hora exacta desde el celular — sin llamadas, sin
-            esperas.
+            Cortes, color y barbería con hora reservada desde el celular:
+            elegís el día, quién te atiende y listo, sin tener que llamar.
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -42,17 +37,11 @@ export function Hero() {
             </a>
           </div>
 
-          <dl className="mt-14 grid grid-cols-3 gap-4 border-t border-ink/15 pt-8 sm:max-w-lg">
-            {CIFRAS.map((c) => (
-              <div key={c.detalle}>
-                <dt className="sr-only">{c.detalle}</dt>
-                <dd className="font-display text-4xl font-semibold text-wine sm:text-5xl">
-                  {c.numero}
-                </dd>
-                <p className="mt-1 text-xs leading-snug text-ink/60">{c.detalle}</p>
-              </div>
-            ))}
-          </dl>
+          <p className="mt-14 max-w-lg border-t border-ink/15 pt-6 text-sm text-ink/60">
+            En el mismo local de Treinta y Tres y Rodó desde 2009. Estacionás
+            en la puerta y, si vas caminando, quedamos a dos cuadras de Plaza
+            Libertad.
+          </p>
         </div>
 
         <div className="relative flex min-h-[26rem] flex-col overflow-hidden bg-ink px-6 py-8 sm:min-h-[32rem] sm:px-9 sm:py-10 md:col-span-5 md:min-h-full">

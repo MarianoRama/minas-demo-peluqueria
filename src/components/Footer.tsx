@@ -1,10 +1,12 @@
 import { AUTOR } from '../config'
-import { NEGOCIO } from '../data'
+import { useDatos } from '../data/useDatos'
 import { IconTijera } from './icons'
 
 const REDES = ['Instagram', 'Facebook', 'TikTok']
 
 export function Footer() {
+  const { datos } = useDatos()
+  const { negocio: NEGOCIO } = datos
   return (
     <footer className="border-t border-ink/10 bg-ink px-5 py-14 text-cream sm:px-8">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 md:grid-cols-3">
@@ -14,8 +16,7 @@ export function Footer() {
             <span className="font-display text-xl font-semibold">{NEGOCIO.nombre}</span>
           </div>
           <p className="mt-3 text-sm text-cream/55">
-            {NEGOCIO.rubro} — proyecto demo de portafolio, no representa un
-            negocio real.
+            {NEGOCIO.rubro}. Proyecto demo de portafolio, no representa un negocio real.
           </p>
         </div>
 
@@ -36,7 +37,7 @@ export function Footer() {
           </h3>
           <ul className="mt-3 space-y-2 text-sm text-cream/70">
             {REDES.map((red) => (
-              <li key={red} title={`${red} — sin enlace real, solo demo`}>
+              <li key={red} title={`${red}: sin enlace real, solo demo`}>
                 {red}
               </li>
             ))}
@@ -46,11 +47,11 @@ export function Footer() {
 
       <div className="mx-auto mt-10 max-w-6xl border-t border-cream/10 pt-6 text-center text-xs text-cream/45">
         <p>
-          © {new Date().getFullYear()} {NEGOCIO.nombre} — sitio de demostración de portafolio.
+          © {new Date().getFullYear()} {NEGOCIO.nombre}, sitio de demostración de portafolio.
           Nombre, precios, contacto e ilustraciones son ficticios.
         </p>
         <p className="mt-3">
-          Sitio demo por {AUTOR.nombre} — ¿querés una página así para tu negocio?{' '}
+          Sitio demo por {AUTOR.nombre}. ¿Querés una página así para tu negocio?{' '}
           <a
             href={`https://wa.me/${AUTOR.whatsapp}?text=${encodeURIComponent(
               `Hola ${AUTOR.nombre}! Vi la demo de ${NEGOCIO.nombre} y me interesa una página para mi negocio.`,
@@ -61,7 +62,10 @@ export function Footer() {
           >
             Escribime
           </a>{' '}
-          — {AUTOR.texto}.
+          ({AUTOR.texto}). ·{' '}
+          <a href="#/admin" className="font-medium text-cream/70 underline decoration-cream/30 underline-offset-4 hover:text-cream">
+            Administrar sitio
+          </a>
         </p>
       </div>
     </footer>

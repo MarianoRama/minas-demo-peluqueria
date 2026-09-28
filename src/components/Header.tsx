@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react'
-import { NEGOCIO } from '../data'
+import { useDatos } from '../data/useDatos'
 import { IconMenu, IconCerrar, IconTijera } from './icons'
 
 const NAV_LINKS = [
   { href: '#servicios', label: 'Servicios' },
   { href: '#equipo', label: 'Equipo' },
+  { href: '#trabajos', label: 'Trabajos' },
   { href: '#reserva', label: 'Reservar' },
   { href: '#ubicacion', label: 'Cómo llegar' },
 ]
 
 export function Header() {
+  const { datos } = useDatos()
+  const NEGOCIO = datos.negocio
   const [abierto, setAbierto] = useState(false)
 
   useEffect(() => {

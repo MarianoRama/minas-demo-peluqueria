@@ -231,3 +231,131 @@ export function IconMenu(props: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
+export function IconCamara(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} {...props}>
+      <path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z" strokeLinejoin="round" />
+      <circle cx="12" cy="13" r="3.4" />
+    </svg>
+  )
+}
+
+export function IconMas(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} {...props}>
+      <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+export function IconBasura(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} {...props}>
+      <path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-9 0 1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M10 11v6M14 11v6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+export function IconLapiz(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} {...props}>
+      <path d="M4 20l1-4.2L15.8 5a1.6 1.6 0 0 1 2.3 0l.9.9a1.6 1.6 0 0 1 0 2.3L8.2 19l-4.2 1Z" strokeLinejoin="round" />
+      <path d="M13.5 6.5l3.9 3.9" />
+    </svg>
+  )
+}
+
+export function IconCopiar(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} {...props}>
+      <rect x="8" y="8" width="12" height="12" rx="1.5" />
+      <path d="M16 8V5a1.5 1.5 0 0 0-1.5-1.5H5A1.5 1.5 0 0 0 3.5 5v10A1.5 1.5 0 0 0 5 16.5h3" />
+    </svg>
+  )
+}
+
+export function IconCandado(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} {...props}>
+      <rect x="5" y="11" width="14" height="9" rx="1.5" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+      <circle cx="12" cy="15.3" r="1.4" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+export function IconBuscar(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} {...props}>
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <path d="m20 20-4.6-4.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+export function IconDescargar(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} {...props}>
+      <path d="M12 4v11m0 0 4-4m-4 4-4-4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4 18v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+export function IconSubir(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} {...props}>
+      <path d="M12 20V9m0 0 4 4m-4-4-4 4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4 18v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+export function IconAlerta(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} {...props}>
+      <path d="M12 3.5 21.5 20h-19L12 3.5Z" strokeLinejoin="round" />
+      <path d="M12 10v4" strokeLinecap="round" />
+      <circle cx="12" cy="17" r="0.9" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+export function IconImagen(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} {...props}>
+      <rect x="3.5" y="4.5" width="17" height="15" rx="1.2" />
+      <circle cx="9" cy="10" r="1.7" />
+      <path d="m4.5 17 5-5 3 3 3-4 4 6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+/** Sello circular tipo tampón, para la carta de precios ("de fábrica"). */
+export function IconSello(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth={1.6} {...props}>
+      <g transform="rotate(-9 50 50)">
+        <circle cx="50" cy="50" r="34" strokeDasharray="2.2 3.4" />
+        <circle cx="50" cy="50" r="26" />
+        <path id="curva-sello" d="M26 58a26 26 0 0 1 48 0" fill="none" />
+        <text fontSize="9.5" letterSpacing="2" fill="currentColor" stroke="none">
+          <textPath href="#curva-sello" startOffset="50%" textAnchor="middle">
+            DESDE 2009
+          </textPath>
+        </text>
+        <path d="M36 46c3-4 7 4 10 0s7-4 10 0 7 4 8 0" strokeLinecap="round" />
+      </g>
+    </svg>
+  )
+}
+
+export function IconEstrella(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path d="M12 3.5 14.6 9l6 .9-4.3 4.2 1 6-5.3-2.8-5.3 2.8 1-6L3.4 9.9l6-.9 2.6-5.5Z" strokeLinejoin="round" />
+    </svg>
+  )
+}

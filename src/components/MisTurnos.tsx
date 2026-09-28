@@ -23,13 +23,14 @@ export function MisTurnos({ actualizarSenal }: { actualizarSenal: number }) {
     setACancelar(null)
   }
 
-  if (turnos.length === 0) return null
+  const visibles = turnos.filter((t) => t.estado !== 'cancelado')
+  if (visibles.length === 0) return null
 
   return (
     <div className="mt-10 border-t border-ink/15 pt-8">
       <h3 className="font-display text-xl font-semibold text-ink">Tus turnos</h3>
       <ul className="mt-4 space-y-3">
-        {turnos.map((t) => (
+        {visibles.map((t) => (
           <li
             key={t.id}
             className="flex flex-col gap-3 border border-ink/15 bg-cream px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
