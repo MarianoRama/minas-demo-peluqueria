@@ -27,6 +27,36 @@ galería (placeholders de picsum.photos) son todos datos de ejemplo.
   "Minas, Uruguay")
 - Footer con redes sociales (sin enlaces reales) y contacto ficticio
 
+## Panel de estilistas (demo)
+
+Además de la landing, el sitio incluye un **panel de administración** pensado
+para que el dueño de la peluquería lo use desde el celular, en el momento en
+que un cliente pide un turno. Se accede desde el link "Panel de estilistas"
+del header o del footer (ruta `#/panel`, separada de los anclas de la
+landing).
+
+- **Selección de perfil**: al entrar se elige "quién sos" entre los 3
+  estilistas de ejemplo. No hay contraseña real — es solo una pantalla de
+  selección, suficiente para una demo.
+- **Agenda por estilista**: cada estilista ve únicamente sus propias
+  reservas, día por día, con nombre del cliente, teléfono y servicio.
+- **Reserva rápida**: formulario mínimo (cliente, teléfono, servicio, fecha,
+  hora) pensado para cargarse en pocos toques, parado con el cliente
+  adelante.
+- **Días cerrados**: un calendario donde se toca un día para marcarlo
+  cerrado (feriado, día libre) y bloquear que se carguen turnos ese día,
+  para cualquier estilista.
+- **Confirmación por WhatsApp**: cada reserva creada muestra un botón que
+  abre `https://wa.me/<telefono>?text=<mensaje>` con el turno ya redactado
+  (link de "click to chat", sin necesitar la API oficial). El punto exacto
+  donde en el futuro se conectaría la API de WhatsApp Business está marcado
+  con un comentario en `src/admin/lib/whatsapp.ts`.
+
+**Persistencia**: todo (estilistas activos, reservas, días cerrados) se
+guarda en `localStorage` del navegador, igual que el patrón usado en la demo
+de pádel del mismo proyecto — no hay backend ni base de datos real. Es una
+demo de portafolio, no un sistema en producción.
+
 ## Cómo correrlo
 
 ```bash

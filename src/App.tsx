@@ -11,6 +11,9 @@
  * fines de demostración.
  */
 
+import { useEffect, useState } from 'react'
+import AdminPanel from './admin/components/AdminPanel'
+
 const WHATSAPP_NUMBER_DISPLAY = '+598 99 000 000'
 const WHATSAPP_NUMBER_LINK = '59899000000' // número de EJEMPLO, no es real
 const WHATSAPP_MESSAGE = encodeURIComponent(
@@ -105,14 +108,23 @@ function Header() {
             </a>
           ))}
         </nav>
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden rounded-full bg-rosewood px-5 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-105 hover:bg-rosewood/90 md:inline-block"
-        >
-          Reservá tu turno
-        </a>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <a
+            href="#/panel"
+            title="Acceso para estilistas (demo)"
+            className="rounded-full border border-rosewood/30 px-3 py-1.5 text-xs font-semibold text-rosewood transition-colors hover:bg-rosewood/10 sm:px-4 sm:py-2 sm:text-sm"
+          >
+            Panel de estilistas
+          </a>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden rounded-full bg-rosewood px-5 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-105 hover:bg-rosewood/90 md:inline-block"
+          >
+            Reservá tu turno
+          </a>
+        </div>
       </div>
     </header>
   )
@@ -404,6 +416,12 @@ function Footer() {
               </span>
             ))}
           </div>
+          <a
+            href="#/panel"
+            className="mt-4 inline-block text-xs text-blush-50/60 underline"
+          >
+            Acceso para estilistas (panel demo)
+          </a>
         </div>
       </div>
 
@@ -416,7 +434,27 @@ function Footer() {
   )
 }
 
+function useHashRoute(): string {
+  const [hash, setHash] = useState(() => window.location.hash)
+
+  useEffect(() => {
+    const onHashChange = () => setHash(window.location.hash)
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
+  return hash
+}
+
 function App() {
+  const hash = useHashRoute()
+
+  // Ruta separada (#/panel) para el panel de administración de
+  // estilistas, distinta de los anclas de la landing (#inicio, etc.).
+  if (hash.startsWith('#/panel')) {
+    return <AdminPanel />
+  }
+
   return (
     <div className="min-h-screen bg-blush-50">
       <Header />
